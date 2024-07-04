@@ -14,53 +14,22 @@ struct SplashView: View {
     var body: some View {
         switch state {
         case .loading: 
-            loadingView()
+            loadingView(error: "Erro no servidor")
         case .goToSignInScreen:
             Text("Carregar tela de login")
         case .goToHomeScreen: 
             Text("Carregar tela principal")
         case .error(let msg) : 
-            Text("mostrar erro: \n \(msg)")
+            loadingView(error: msg)
         }
     }
 }
 
 
-////Compartilhamento de objetos
-//struct LoadingView: View {
-//    var body: some View {
-//        ZStack {
-//            Image("logo")
-//                .resizable()
-//                .scaledToFit()
-//                .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                .padding(20)
-//                .background(Color.white)
-//                .ignoresSafeArea()
-//        }
-//    }
-//}
-
-
-//// Extensão de variaveis
-//extension SplashView {
-//    var loading: some View {
-//        ZStack {
-//            Image("logo")
-//                .resizable()
-//                .scaledToFit()
-//                .frame(maxWidth: .infinity, maxHeight: .infinity)
-//                .padding(20)
-//                .background(Color.white)
-//                .ignoresSafeArea()
-//        }
-//    }
-//}
-
 // Funcoes em extensão
-//Funcoes são mais usadas pois aceitam variaveis. 
+//Funcoes são mais usadas pois aceitam variaveis.
 extension SplashView {
-    func loadingView() -> some View {
+    func loadingView(error: String? = nil) -> some View {
         ZStack {
                    Image("logo")
                        .resizable()
@@ -69,9 +38,20 @@ extension SplashView {
                        .padding(20)
                        .background(Color.white)
                        .ignoresSafeArea()
-               }
-           }
+            
+            if let error = error {
+                Text("")
+                    .alert(isPresented: .constant(true)) {
+                        Alert(title: Text("Habit"), message: Text(error), dismissButton: .default(Text("OK")) {
+                          // Faz algo quando some o alerta
+                        })
+                    }
+            }
+        }
+    }
 }
+
 #Preview {
-    SplashView(state: .loading)
+    SplashView(state: .error("Teste de erro no servidor"))
+//    SplashView(state: .loading)
 }
